@@ -10,9 +10,6 @@ from app.gpt import gpt_client
 bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
 dp = Dispatcher()
 
-with open("data/parsed_data.json", "r", encoding="utf-8") as f:
-    parsed_data = json.load(f)
-
 
 @dp.message(Command("start"))
 async def send_welcome(message: types.Message):
@@ -24,11 +21,14 @@ async def send_welcome(message: types.Message):
 @dp.message()
 async def handle_message(message: types.Message):
     question = message.text
-    context = "\n".join([item["content"] for item in parsed_data])
+    context = "\n".join(
+        [f"{item['content']} [{item['url']}]" for item in settings.PARSED_DATA]
+    )
     prompt = f"Вопрос: {question}\nКонтекст: {context}"
     response = gpt_client.generate_response(prompt)
 
     await message.reply(response)
+
 
 
 async def main():

@@ -9,19 +9,14 @@ class GPTClient:
         self.model = self.sdk.models.completions("yandexgpt").configure(temperature=0.5)
         self.context = settings.LLM_CONTEXT
 
-        with open("data/parsed_data.json", "r", encoding="utf-8") as f:
-            self.parsed_data = json.load(f)
-
-        for item in self.parsed_data:
-            self.context += f"Описание: {item['content']}, Источник: {item['url']}\n"
-
     def generate_response(self, question):
         try:
             full_prompt = f"{self.context}\nВопрос: {question}"
             result = self.model.run(full_prompt)
 
             if result.alternatives:
-                response_text = result.alternatives[0].text.replace('\\n', '\n')
+                response_text = result.alternatives[0].text.replace("\\n", "\n")
+                print(response_text)
                 return response_text
             else:
                 return "Нет доступных альтернатив."
