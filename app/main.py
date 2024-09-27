@@ -18,6 +18,10 @@ async def send_welcome(message: types.Message):
     )
 
 
+import re
+from aiogram.utils.markdown import hlink
+
+
 @dp.message()
 async def handle_message(message: types.Message):
     question = message.text
@@ -27,8 +31,13 @@ async def handle_message(message: types.Message):
     prompt = f"Вопрос: {question}\nКонтекст: {context}"
     response = gpt_client.generate_response(prompt)
 
-    await message.reply(response)
+    links = re.findall(r"\[https?://[^\]]+\]", response)
 
+    for i, link in enumerate(links, 1):
+        clean_link = link[1:-1]
+        response = response.replace(link, hlink(f"[{i}]", clean_link), 1)
+
+    await message.reply(response, parse_mode="HTML")
 
 
 async def main():
