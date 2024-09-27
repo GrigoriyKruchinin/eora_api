@@ -1,1 +1,1 @@
-# eora_api
+# eora_bot
