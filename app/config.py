@@ -6,20 +6,24 @@ load_dotenv()
 
 
 class Settings:
+    """
+    Класс для хранения конфигурации приложения, в том числе данных окружения и предварительно обработанных данных.
+    """
+
     # Ваши переменные окружения
-    YANDEX_API_KEY = os.getenv("YANDEX_API_KEY")
-    TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-    FOLDER_ID = os.getenv("YANDEX_FOLDER_ID")
+    YANDEX_API_KEY: str = os.getenv("YANDEX_API_KEY", "")
+    TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
+    FOLDER_ID: str = os.getenv("YANDEX_FOLDER_ID", "")
 
     # Путь к файлу с данными
-    PARSED_DATA_FILE_PATH = "data/parsed_data.json"
+    PARSED_DATA_FILE_PATH: str = "data/parsed_data.json"
 
-    # Чтение и подготовка данных
-    PARSED_DATA = load_parsed_data(PARSED_DATA_FILE_PATH)
-    SOURCES_DATA = prepare_sources_data(PARSED_DATA)
+    # Загруженные данные
+    PARSED_DATA: list = load_parsed_data(PARSED_DATA_FILE_PATH)
+    SOURCES_DATA: str = prepare_sources_data(PARSED_DATA)
 
     # Контекст для GPT
-    LLM_CONTEXT = (
+    LLM_CONTEXT: str = (
         "Ты являешься консультантом для ответов на вопросы наших потенциальных клиентов! "
         "Твоя задача — давать краткие и чёткие ответы на основе данных из кейсов компании. "
         "В каждом ответе используй не более 1-3 примеров из ниже приведенных данных, оформляя их в виде нумерованного списка. "
@@ -40,7 +44,7 @@ class Settings:
     ) + SOURCES_DATA
 
     # Ссылки на кейсы компании для формирования контекста GPT
-    SOURCES_URLS = [
+    SOURCES_URLS: list = [
         "https://eora.ru/cases/promyshlennaya-bezopasnost",
         "https://eora.ru/cases/lamoda-systema-segmentacii-i-poiska-po-pohozhey-odezhde",
         "https://eora.ru/cases/navyki-dlya-golosovyh-assistentov/karas-golosovoy-assistent",

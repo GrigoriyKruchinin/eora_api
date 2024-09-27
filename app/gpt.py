@@ -3,12 +3,25 @@ from app.config import settings
 
 
 class GPTClient:
-    def __init__(self):
+    """
+    Класс для взаимодействия с YandexGPT через SDK YCloudML.
+    """
+
+    def __init__(self) -> None:
+        """
+        Инициализация клиента YandexGPT с необходимыми параметрами.
+        """
         self.sdk = YCloudML(folder_id=settings.FOLDER_ID, auth=settings.YANDEX_API_KEY)
         self.model = self.sdk.models.completions("yandexgpt").configure(temperature=0.5)
         self.context = settings.LLM_CONTEXT
 
-    def generate_response(self, question):
+    def generate_response(self, question: str) -> str:
+        """
+        Генерация ответа на основе вопроса и контекста.
+
+        :param question: Вопрос от пользователя
+        :return: Сгенерированный ответ от модели GPT
+        """
         try:
             full_prompt = f"{self.context}\nВопрос: {question}"
             result = self.model.run(full_prompt)

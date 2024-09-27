@@ -9,7 +9,13 @@ headers = {
 }
 
 
-def fetch_data_from_url(url):
+def fetch_data_from_url(url: str) -> dict:
+    """
+    Получение данных с указанного URL и парсинг с помощью BeautifulSoup.
+
+    :param url: URL для парсинга
+    :return: Словарь с контентом страницы и URL или ошибкой
+    """
     try:
         response = requests.get(url, headers=headers)
         response.raise_for_status()
@@ -22,7 +28,12 @@ def fetch_data_from_url(url):
         return {"error": f"Ошибка при парсинге данных: {e}"}
 
 
-def fetch_all_data():
+def fetch_all_data() -> list:
+    """
+    Получение данных со всех URL, указанных в конфигурации, и сохранение их в JSON файл.
+
+    :return: Список всех полученных данных
+    """
     all_data = []
     for url in settings.SOURCES_URLS:
         data = fetch_data_from_url(url)
