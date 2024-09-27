@@ -1,4 +1,3 @@
-import json
 from yandex_cloud_ml_sdk import YCloudML
 from app.config import settings
 

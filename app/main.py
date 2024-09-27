@@ -1,10 +1,11 @@
+import re
 import asyncio
-import json
 import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from app.config import settings
 from app.gpt import gpt_client
+from app.utils import replace_links_with_numbers
 
 
 bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
@@ -18,24 +19,11 @@ async def send_welcome(message: types.Message):
     )
 
 
-import re
-from aiogram.utils.markdown import hlink
-
-
 @dp.message()
 async def handle_message(message: types.Message):
-    question = message.text
-    context = "\n".join(
-        [f"{item['content']} [{item['url']}]" for item in settings.PARSED_DATA]
-    )
-    prompt = f"Вопрос: {question}\nКонтекст: {context}"
-    response = gpt_client.generate_response(prompt)
-
+    response = gpt_client.generate_response(message.text)
     links = re.findall(r"\[https?://[^\]]+\]", response)
-
-    for i, link in enumerate(links, 1):
-        clean_link = link[1:-1]
-        response = response.replace(link, hlink(f"[{i}]", clean_link), 1)
+    response = replace_links_with_numbers(response, links)
 
     await message.reply(response, parse_mode="HTML")
 

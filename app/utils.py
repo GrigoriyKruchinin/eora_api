@@ -1,4 +1,5 @@
 import json
+from aiogram.utils.markdown import hlink
 
 
 def load_parsed_data(file_path):
@@ -15,3 +16,10 @@ def prepare_sources_data(parsed_data):
     for item in parsed_data:
         sources_data += f"Название: {item['content']}, URL: [{item['url']}]\n"
     return sources_data
+
+
+def replace_links_with_numbers(response, links):
+    for i, link in enumerate(links, 1):
+        clean_link = link[1:-1]
+        response = response.replace(link, hlink(f"[{i}]", clean_link), 1)
+    return response
